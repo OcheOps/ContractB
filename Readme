@@ -1,0 +1,22 @@
+POST /project-details
+Content-Type: application/json
+
+{
+    "ptbReference": "REF123",
+    "projectName": "Project Alpha",
+    "awardExecutionPeriod": "2023-01-01 - 2024-12-31",
+    "projectSupervisor": "John Doe"
+}
+
+
+
+POST /project-progress
+Content-Type: application/json
+
+{
+    "projectName": "Project Alpha",
+    "tasksAccomplished": ["Task 1", "Task 2"],
+    "pendingTasks": ["Task 3", "Task 4"],
+    "constraints": ["Budget constraints", "Resource constraints"],
+    "remarks": "Project is progressing as planned."
+}
