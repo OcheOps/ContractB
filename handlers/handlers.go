@@ -6,11 +6,12 @@ import (
     "log"
     "net/http"
     "time"
-
-    "github.com/your-project/models"
+	"os"
+    "github.com/OcheOps/ContractB/models"
     "go.mongodb.org/mongo-driver/bson"
     "go.mongodb.org/mongo-driver/mongo"
     "go.mongodb.org/mongo-driver/mongo/options"
+	"github.com/joho/godotenv"
 )
 
 var client *mongo.Client
@@ -28,9 +29,19 @@ func init() {
 }
 
 func LoadMongoURI() string {
-    // Load MongoDB URI from .env file
-    // ...
+    err := godotenv.Load()
+    if err != nil {
+        log.Fatal("Error loading .env file")
+    }
+
+    mongoURI := os.Getenv("MONGO_URI")
+    if mongoURI == "" {
+        log.Fatal("MONGO_URI is not set in the .env file")
+    }
+
+    return mongoURI
 }
+
 
 func ReportHandler(w http.ResponseWriter, r *http.Request) {
     ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
@@ -75,4 +86,48 @@ func ReportHandler(w http.ResponseWriter, r *http.Request) {
 
     w.Header().Set("Content-Type", "application/json")
     json.NewEncoder(w).Encode(report)
+}
+
+func CreateProjectDetailsHandler(w http.ResponseWriter, r *http.Request) {
+    ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+    defer cancel()
+
+    projectDetailsCollection := client.Database("your-database").Collection("projectDetails")
+
+    var projectDetails models.ProjectDetails
+    if err := json.NewDecoder(r.Body).Decode(&projectDetails); err != nil {
+        http.Error(w, err.Error(), http.StatusBadRequest)
+        return
+    }
+
+    result, err := projectDetailsCollection.InsertOne(ctx, projectDetails)
+    if err != nil {
+        http.Error(w, err.Error(), http.StatusInternalServerError)
+        return
+    }
+
+    w.Header().Set("Content-Type", "application/json")
+    json.NewEncoder(w).Encode(result.InsertedID)
+}
+
+func CreateProjectProgressHandler(w http.ResponseWriter, r *http.Request) {
+    ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+    defer cancel()
+
+    projectProgressCollection := client.Database("your-database").Collection("projectProgress")
+
+    var projectProgress models.ProjectProgress
+    if err := json.NewDecoder(r.Body).Decode(&projectProgress); err != nil {
+        http.Error(w, err.Error(), http.StatusBadRequest)
+        return
+    }
+
+    result, err := projectProgressCollection.InsertOne(ctx, projectProgress)
+    if err != nil {
+        http.Error(w, err.Error(), http.StatusInternalServerError)
+        return
+    }
+
+    w.Header().Set("Content-Type", "application/json")
+    json.NewEncoder(w).Encode(result.InsertedID)
 }
