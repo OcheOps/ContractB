@@ -1,17 +1,18 @@
 package handlers
 
 import (
-    "context"
-    "encoding/json"
-    "log"
-    "net/http"
-    "time"
+	"context"
+	"encoding/json"
+	"log"
+	"net/http"
 	"os"
-    "github.com/OcheOps/ContractB/models"
-    "go.mongodb.org/mongo-driver/bson"
-    "go.mongodb.org/mongo-driver/mongo"
-    "go.mongodb.org/mongo-driver/mongo/options"
+	"time"
+
+	"github.com/OcheOps/ContractB/models"
 	"github.com/joho/godotenv"
+	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
 var client *mongo.Client
@@ -84,6 +85,9 @@ func ReportHandler(w http.ResponseWriter, r *http.Request) {
         ProjectProgress: projectProgress,
     }
 
+    w.Header().Set("Access-Control-Allow-Origin", "https://contract-f.vercel.app") // Replace * with the origin(s) you want to allow
+    w.Header().Set("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
+    w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
     w.Header().Set("Content-Type", "application/json")
     json.NewEncoder(w).Encode(report)
 }
@@ -106,6 +110,9 @@ func CreateProjectDetailsHandler(w http.ResponseWriter, r *http.Request) {
         return
     }
 
+    w.Header().Set("Access-Control-Allow-Origin", "https://contract-f.vercel.app") // Replace * with the origin(s) you want to allow
+    w.Header().Set("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
+    w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
     w.Header().Set("Content-Type", "application/json")
     json.NewEncoder(w).Encode(result.InsertedID)
 }
@@ -128,6 +135,10 @@ func CreateProjectProgressHandler(w http.ResponseWriter, r *http.Request) {
         return
     }
 
+
+    w.Header().Set("Access-Control-Allow-Origin", "https://contract-f.vercel.app") // Replace * with the origin(s) you want to allow
+    w.Header().Set("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
+    w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
     w.Header().Set("Content-Type", "application/json")
     json.NewEncoder(w).Encode(result.InsertedID)
 }
