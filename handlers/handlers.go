@@ -88,7 +88,7 @@ func ReportHandler(w http.ResponseWriter, r *http.Request) {
     w.Header().Set("Access-Control-Allow-Origin", "https://contract-f.vercel.app") // Replace * with the origin(s) you want to allow
     w.Header().Set("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
     w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
-    w.Header().Set("Content-Type", "application/json")
+    //w.Header().Set("Content-Type", "application/json")
     if r.Method == "OPTIONS" {
         w.WriteHeader(http.StatusOK)
         return
@@ -118,7 +118,7 @@ func CreateProjectDetailsHandler(w http.ResponseWriter, r *http.Request) {
     w.Header().Set("Access-Control-Allow-Origin", "https://contract-f.vercel.app") // Replace * with the origin(s) you want to allow
     w.Header().Set("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
     w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
-    w.Header().Set("Content-Type", "application/json")
+    //w.Header().Set("Content-Type", "application/json")
     if r.Method == "OPTIONS" {
         w.WriteHeader(http.StatusOK)
         return
@@ -149,7 +149,7 @@ func CreateProjectProgressHandler(w http.ResponseWriter, r *http.Request) {
     w.Header().Set("Access-Control-Allow-Origin", "https://contract-f.vercel.app") // Replace * with the origin(s) you want to allow
     w.Header().Set("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
     w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
-    w.Header().Set("Content-Type", "application/json")
+  //  w.Header().Set("Content-Type", "application/json")
     if r.Method == "OPTIONS" {
         w.WriteHeader(http.StatusOK)
         return
