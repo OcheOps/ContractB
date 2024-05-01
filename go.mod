@@ -4,6 +4,8 @@ go 1.22.2
 
 require go.mongodb.org/mongo-driver v1.15.0
 
+require github.com/rs/cors v1.11.0 // indirect
+
 require (
 	github.com/golang/snappy v0.0.1 // indirect
 	github.com/joho/godotenv v1.5.1
