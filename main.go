@@ -14,11 +14,10 @@ func main() {
         AllowedOrigins:   []string{"https://contract-f.vercel.app"}, // Replace with your allowed origins
         AllowedMethods:   []string{"POST", "GET", "OPTIONS"},
         AllowedHeaders:   []string{"Accept", "Content-Type", "Content-Length", "Accept-Encoding", "Authorization"},
-        AllowCredentials: true, // Allow cookies for cross-origin requests (optional)
+        AllowCredentials: false, // Allow cookies for cross-origin requests (optional)
     })
 
     wrappedHandler := corsHandler.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-        // Your main request handling logic here
         switch r.URL.Path {
         case "/report":
             handlers.ReportHandler(w, r)
@@ -27,7 +26,6 @@ func main() {
         case "/project-progress":
             handlers.CreateProjectProgressHandler(w, r)
         default:
-            // Handle unknown routes
         }
     }))
 

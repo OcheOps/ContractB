@@ -44,58 +44,58 @@ func LoadMongoURI() string {
 }
 
 
-func ReportHandler(w http.ResponseWriter, r *http.Request) {
-    ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
-    defer cancel()
+    func ReportHandler(w http.ResponseWriter, r *http.Request) {
+        ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+        defer cancel()
 
-    projectDetailsCollection := client.Database("your-database").Collection("projectDetails")
-    projectProgressCollection := client.Database("your-database").Collection("projectProgress")
+        projectDetailsCollection := client.Database("your-database").Collection("projectDetails")
+        projectProgressCollection := client.Database("your-database").Collection("projectProgress")
 
-    var projectDetails []models.ProjectDetails
-    cursor, err := projectDetailsCollection.Find(ctx, bson.M{})
-    if err != nil {
-        http.Error(w, err.Error(), http.StatusInternalServerError)
-        return
+        var projectDetails []models.ProjectDetails
+        cursor, err := projectDetailsCollection.Find(ctx, bson.M{})
+        if err != nil {
+            http.Error(w, err.Error(), http.StatusInternalServerError)
+            return
+        }
+        defer cursor.Close(ctx)
+
+        if err = cursor.All(ctx, &projectDetails); err != nil {
+            http.Error(w, err.Error(), http.StatusInternalServerError)
+            return
+        }
+
+        var projectProgress []models.ProjectProgress
+        cursor, err = projectProgressCollection.Find(ctx, bson.M{})
+        if err != nil {
+            http.Error(w, err.Error(), http.StatusInternalServerError)
+            return
+        }
+        defer cursor.Close(ctx)
+
+        if err = cursor.All(ctx, &projectProgress); err != nil {
+            http.Error(w, err.Error(), http.StatusInternalServerError)
+            return
+        }
+
+        report := struct {
+            ProjectDetails  []models.ProjectDetails
+            ProjectProgress []models.ProjectProgress
+        }{
+            ProjectDetails:  projectDetails,
+            ProjectProgress: projectProgress,
+        }
+
+        w.Header().Set("Access-Control-Allow-Origin", "https://contract-f.vercel.app") // Replace * with the origin(s) you want to allow
+        w.Header().Set("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
+        w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
+        //w.Header().Set("Content-Type", "application/json")
+        if r.Method == "OPTIONS" {
+            w.WriteHeader(http.StatusOK)
+            return
+        }
+
+        json.NewEncoder(w).Encode(report)
     }
-    defer cursor.Close(ctx)
-
-    if err = cursor.All(ctx, &projectDetails); err != nil {
-        http.Error(w, err.Error(), http.StatusInternalServerError)
-        return
-    }
-
-    var projectProgress []models.ProjectProgress
-    cursor, err = projectProgressCollection.Find(ctx, bson.M{})
-    if err != nil {
-        http.Error(w, err.Error(), http.StatusInternalServerError)
-        return
-    }
-    defer cursor.Close(ctx)
-
-    if err = cursor.All(ctx, &projectProgress); err != nil {
-        http.Error(w, err.Error(), http.StatusInternalServerError)
-        return
-    }
-
-    report := struct {
-        ProjectDetails  []models.ProjectDetails
-        ProjectProgress []models.ProjectProgress
-    }{
-        ProjectDetails:  projectDetails,
-        ProjectProgress: projectProgress,
-    }
-
-    w.Header().Set("Access-Control-Allow-Origin", "https://contract-f.vercel.app") // Replace * with the origin(s) you want to allow
-    w.Header().Set("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
-    w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
-    //w.Header().Set("Content-Type", "application/json")
-    if r.Method == "OPTIONS" {
-        w.WriteHeader(http.StatusOK)
-        return
-    }
-
-    json.NewEncoder(w).Encode(report)
-}
 
 func CreateProjectDetailsHandler(w http.ResponseWriter, r *http.Request) {
     ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
